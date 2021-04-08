@@ -1,13 +1,15 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(
-      DevicePreview(
-        enabled: !kReleaseMode,
-        builder: (context) => MyApp(), // Wrap your app
-      ),
-    );
+// void main() => runApp(
+//       DevicePreview(
+//         enabled: !kReleaseMode,
+//         builder: (context) => MyApp(), // Wrap your app
+//       ),
+//     );
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -15,8 +17,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: DevicePreview.locale(context), // Add the locale here
-      builder: DevicePreview.appBuilder, // Add the builder here
+      // locale: DevicePreview.locale(context), // Add the locale here
+      // builder: DevicePreview.appBuilder, // Add the builder here
       title: 'ToDo App',
       theme: ThemeData(
         brightness: Brightness.dark,
@@ -34,6 +36,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  addData() {
+    // CollectionReference collectionReference =
+    // Firestore.instance.collection('data');
+  }
+
   List todos = List();
   String input = "";
   @override
@@ -68,9 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 trailing: IconButton(
                   icon: Icon(Icons.delete, color: Colors.red[400]),
                   onPressed: () {
-                    setState(() {
-                      todos.removeAt(index);
-                    });
+                    setState(
+                      () {
+                        todos.removeAt(index);
+                      },
+                    );
                   },
                 ),
               ),
@@ -93,10 +102,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   actions: <Widget>[
                     FlatButton(
                         onPressed: () {
-                          setState(() {
-                            todos.add(input);
-                            Navigator.of(context).pop();
-                          });
+                          setState(
+                            () {
+                              addData();
+                              todos.add(input);
+                              Navigator.of(context).pop();
+                            },
+                          );
                         },
                         child: Text('Add'))
                   ]);
