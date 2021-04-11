@@ -38,5 +38,48 @@ class DBHelper {
   Future<ToDoInfo> save(ToDoInfo toDoInfo) async {
     var dbClient = await db;
     toDoInfo.id = await dbClient.insert(TABLE, toDoInfo.toMap());
+    return toDoInfo;
+    // await dbClient.transaction((txn) async {
+    //   var query = "INSERT INTO $TABLE VALUES ('" +
+    //       toDoInfo.title +
+    //       "','" +
+    //       toDoInfo.description +
+    //       "','" +
+    //       toDoInfo.time +
+    //       "','" +
+    //       toDoInfo.date +
+    //       "') ";
+    //   return await txn.rawInsert(query);
+    // });
+  }
+
+  Future<List<ToDoInfo>> getToDos() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient
+        .query(TABLE, columns: [ID, TITLE, DESCRIPTION, TIME, DATE]);
+    // List<Map> maps = await dbClient.rawQuery("SELECT * FROOM $TABLE");
+    List<ToDoInfo> toDos = [];
+    if (maps.length > 0) {
+      for (int i = 0; i < maps.length; i++) {
+        toDos.add(ToDoInfo.fromMap(maps[i]));
+      }
+    }
+    return toDos;
+  }
+
+  Future<int> delete(int id) async {
+    var dbClient = await db;
+    return await dbClient.delete(TABLE, where: '$ID = ?', whereArgs: [id]);
+  }
+
+  Future<int> update(ToDoInfo toDoInfo) async {
+    var dbClient = await db;
+    return await dbClient.update(TABLE, toDoInfo.toMap(),
+        where: '$ID = ?', whereArgs: [toDoInfo.id]);
+  }
+
+  Future close() async {
+    var dbClient = await db;
+    dbClient.close();
   }
 }
